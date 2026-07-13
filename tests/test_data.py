@@ -43,7 +43,7 @@ class TestValidateData:
     def test_missing_target(self):
         df = pd.DataFrame({"x": [1, 2]})
         errors = validate_data(df, "y")
-        assert not isinstance(errors, list) or any("target" in e for e in errors)
+        assert any("target" in e.lower() for e in errors)
 
     def test_too_small(self):
         df = pd.DataFrame({"x": [1], "y": [2]})
