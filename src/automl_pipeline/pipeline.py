@@ -10,7 +10,8 @@ from typing import Any
 import pandas as pd
 
 from .config import DEFAULT_CV_FOLDS, DEFAULT_TEST_SIZE, DEFAULT_RANDOM_STATE
-from .data import load_data, validate_data, detect_problem_type, split_data
+from sklearn.model_selection import train_test_split as tts
+from .data import load_data, validate_data, detect_problem_type
 from .models import get_models, train_model, evaluate_model
 from .optimization import get_param_grid, optimize_grid, get_search_results
 from .preprocessing import preprocess
@@ -63,7 +64,7 @@ def run_pipeline(
 
     X, y = preprocess(df, target, result.preprocessing_config)
 
-    X_train, X_test, y_train, y_test = split_data(X, y, test_size=test_size, random_state=random_state)
+    X_train, X_test, y_train, y_test = tts(X, y, test_size=test_size, random_state=random_state)
 
     available_models = get_models(result.problem_type)
     if models:
