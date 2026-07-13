@@ -55,8 +55,8 @@ def validate_data(df: pd.DataFrame, target: str) -> list[str]:
 
 
 def detect_problem_type(y: pd.Series) -> str:
-    if y.dtype.kind in ("i", "b"):
-        unique = y.nunique()
+    unique = y.nunique()
+    if y.dtype.kind in ("i", "b") or y.dtype.kind == "O" and unique <= 20:
         if unique == 2:
             return "binary_classification"
         if unique < 20:
