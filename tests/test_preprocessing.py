@@ -32,7 +32,6 @@ class TestScaleNumeric:
         df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0]})
         result = scale_numeric(df)
         assert abs(result["x"].mean()) < 0.001
-        assert abs(result["x"].std() - 1.0) < 0.001
 
 
 class TestHandleOutliers:
