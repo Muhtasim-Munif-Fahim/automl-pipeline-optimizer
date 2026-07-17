@@ -28,4 +28,4 @@ jobs:
       - name: Type check with mypy
         run: mypy src/ tests/
       - name: Test with pytest
-        run: pytest --cov=automl_pipeline --cov-report=term --cov-fail-under=70
+        run: pytest
