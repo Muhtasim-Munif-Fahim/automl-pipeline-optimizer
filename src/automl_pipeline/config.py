@@ -14,18 +14,33 @@ N_JOBS: int = -1
 
 MODEL_TYPES: dict[str, list[str]] = {
     "classification": [
-        "logistic_regression", "random_forest", "gradient_boosting",
-        "xgboost", "lightgbm", "svm",
+        "logistic_regression",
+        "random_forest",
+        "gradient_boosting",
+        "xgboost",
+        "lightgbm",
+        "svm",
     ],
     "regression": [
-        "linear_regression", "ridge", "lasso", "elastic_net",
-        "random_forest", "gradient_boosting", "xgboost", "lightgbm",
+        "linear_regression",
+        "ridge",
+        "lasso",
+        "elastic_net",
+        "random_forest",
+        "gradient_boosting",
+        "xgboost",
+        "lightgbm",
     ],
 }
 
 SCORING_METRICS: dict[str, list[str]] = {
     "classification": ["accuracy", "f1", "precision", "recall", "roc_auc"],
-    "regression": ["r2", "neg_mean_squared_error", "neg_mean_absolute_error", "explained_variance"],
+    "regression": [
+        "r2",
+        "neg_mean_squared_error",
+        "neg_mean_absolute_error",
+        "explained_variance",
+    ],
 }
 
 PREPROCESSING_STEPS: list[str] = [

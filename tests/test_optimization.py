@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from automl_pipeline.optimization import get_param_grid, PARAM_GRIDS
+from automl_pipeline.optimization import PARAM_GRIDS, get_param_grid
 
 
 class TestParamGrid:
@@ -18,7 +18,11 @@ class TestParamGrid:
 
     def test_all_models_have_grids(self):
         for model_name in [
-            "logistic_regression", "random_forest", "gradient_boosting",
-            "ridge", "lasso", "svm",
+            "logistic_regression",
+            "random_forest",
+            "gradient_boosting",
+            "ridge",
+            "lasso",
+            "svm",
         ]:
             assert model_name in PARAM_GRIDS, f"{model_name} missing param grid"

@@ -7,7 +7,12 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from automl_pipeline.data import load_data, validate_data, detect_problem_type, split_data
+from automl_pipeline.data import (
+    detect_problem_type,
+    load_data,
+    split_data,
+    validate_data,
+)
 
 
 class TestLoadData:
@@ -68,6 +73,6 @@ class TestDetectProblemType:
 class TestSplitData:
     def test_split(self):
         df = pd.DataFrame({"x": range(100), "y": range(100)})
-        X_train, X_test, y_train, y_test = split_data(df, "y", test_size=0.2)
+        X_train, X_test, _y_train, _y_test = split_data(df, "y", test_size=0.2)
         assert len(X_train) == 80
         assert len(X_test) == 20

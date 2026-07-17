@@ -7,7 +7,6 @@ from typing import Any
 
 import pandas as pd
 
-
 SUPPORTED_FORMATS: dict[str, Any] = {
     ".csv": pd.read_csv,
     ".parquet": pd.read_parquet,
@@ -64,8 +63,11 @@ def detect_problem_type(y: pd.Series) -> str:
     return "regression"
 
 
-def split_data(df: pd.DataFrame, target: str, test_size: float = 0.2, random_state: int = 42):
+def split_data(
+    df: pd.DataFrame, target: str, test_size: float = 0.2, random_state: int = 42
+):
     from sklearn.model_selection import train_test_split
+
     X = df.drop(columns=[target])
     y = df[target]
     return train_test_split(X, y, test_size=test_size, random_state=random_state)

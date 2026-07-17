@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 
 from automl_pipeline.target_encoder import TargetEncoder
 

@@ -7,13 +7,12 @@ import time
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
-from .config import DEFAULT_CV_FOLDS, DEFAULT_TEST_SIZE, DEFAULT_RANDOM_STATE
 from sklearn.model_selection import train_test_split as tts
-from .data import load_data, validate_data, detect_problem_type
-from .models import get_models, train_model, evaluate_model
-from .optimization import get_param_grid, optimize_grid, get_search_results
+
+from .config import DEFAULT_CV_FOLDS, DEFAULT_RANDOM_STATE, DEFAULT_TEST_SIZE
+from .data import detect_problem_type, load_data, validate_data
+from .models import evaluate_model, get_models, train_model
+from .optimization import get_param_grid, get_search_results, optimize_grid
 from .preprocessing import preprocess
 
 
@@ -23,7 +22,7 @@ class PipelineResult:
         self.best_model_name: str = ""
         self.best_model: Any = None
         self.best_score: float = 0.0
-        self.all_results: dict[str, dict[str, float]] = {}
+        self.all_results: dict[str, dict[str, float | str]] = {}
         self.feature_importance: dict[str, float] = {}
         self.preprocessing_config: dict[str, Any] = {}
         self.training_time: float = 0.0
@@ -64,7 +63,9 @@ def run_pipeline(
 
     X, y = preprocess(df, target, result.preprocessing_config)
 
-    X_train, X_test, y_train, y_test = tts(X, y, test_size=test_size, random_state=random_state)
+    X_train, X_test, y_train, y_test = tts(
+        X, y, test_size=test_size, random_state=random_state
+    )
 
     available_models = get_models(result.problem_type)
     if models:
@@ -74,9 +75,9 @@ def run_pipeline(
         try:
             model = train_model(model_name, X_train, y_train)
             eval_results = evaluate_model(model, X_test, y_test, result.problem_type)
-            result.all_results[model_name] = eval_results
+            result.all_results[model_name] = eval_results  # type: ignore[assignment]
 
-            primary_metric = list(eval_results.keys())[0]
+            primary_metric = next(iter(eval_results.keys()))
             score = eval_results[primary_metric]
 
             if optimize:
@@ -85,13 +86,26 @@ def run_pipeline(
                     try:
                         base_cls, defaults = available_models[model_name]
                         base = base_cls(**defaults)
-                        search = optimize_grid(base, param_grid, X_train, y_train, cv=cv_folds, scoring=primary_metric)
+                        search = optimize_grid(
+                            base,
+                            param_grid,
+                            X_train,
+                            y_train,
+                            cv=cv_folds,
+                            scoring=primary_metric,
+                        )
                         opt_score = float(search.best_score_)
                         if opt_score > score:
                             model = search.best_estimator_
                             score = opt_score
-                            eval_results.update(evaluate_model(model, X_test, y_test, result.problem_type))
-                            result.optimization_results[model_name] = get_search_results(search)
+                            eval_results.update(
+                                evaluate_model(
+                                    model, X_test, y_test, result.problem_type
+                                )
+                            )
+                            result.optimization_results[model_name] = (
+                                get_search_results(search)
+                            )
                     except Exception:
                         pass
 
@@ -109,4 +123,6 @@ def run_pipeline(
 def save_results(result: PipelineResult, output_path: str | Path) -> None:
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(result.to_dict(), indent=2, default=str), encoding="utf-8")
+    output.write_text(
+        json.dumps(result.to_dict(), indent=2, default=str), encoding="utf-8"
+    )

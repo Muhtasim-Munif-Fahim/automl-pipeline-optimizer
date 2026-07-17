@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 import pandas as pd
-from automl_pipeline.preprocessing import impute_missing, encode_categorical, scale_numeric, handle_outliers
+
+from automl_pipeline.preprocessing import (
+    encode_categorical,
+    handle_outliers,
+    impute_missing,
+    scale_numeric,
+)
 
 
 class TestImputeMissing:

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pickle
 import json
+import pickle
 from pathlib import Path
 from typing import Any
 
@@ -28,7 +28,9 @@ def save_pipeline_artifacts(artifacts: dict[str, Any], output_dir: str | Path) -
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, artifact in artifacts.items():
         if isinstance(artifact, dict):
-            (output_dir / f"{name}.json").write_text(json.dumps(artifact, indent=2, default=str), encoding="utf-8")
+            (output_dir / f"{name}.json").write_text(
+                json.dumps(artifact, indent=2, default=str), encoding="utf-8"
+            )
         else:
             save_model(artifact, output_dir / f"{name}.pkl")
 

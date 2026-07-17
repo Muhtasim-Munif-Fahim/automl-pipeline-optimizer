@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 
-from automl_pipeline.features import add_polynomial_features, add_interaction_features
+from automl_pipeline.features import add_interaction_features, add_polynomial_features
 
 
 class TestPolynomialFeatures:
@@ -22,6 +21,8 @@ class TestPolynomialFeatures:
 
 class TestInteractionFeatures:
     def test_adds_interactions(self):
-        df = pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0], "c": [7.0, 8.0, 9.0]})
+        df = pd.DataFrame(
+            {"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0], "c": [7.0, 8.0, 9.0]}
+        )
         result = add_interaction_features(df)
         assert result.shape[1] >= df.shape[1]

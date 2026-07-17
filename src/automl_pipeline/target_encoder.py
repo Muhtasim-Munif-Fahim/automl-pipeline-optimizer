@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -17,8 +16,12 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
         self.global_mean_ = float(y.mean()) if y is not None else 0.0
         for col in X.select_dtypes(include=["object", "category"]).columns:
             if y is not None:
-                stats = pd.DataFrame({"count": X[col].value_counts(), "mean": y.groupby(X[col]).mean()})
-                stats["smooth"] = (stats["count"] * stats["mean"] + self.smoothing * self.global_mean_) / (stats["count"] + self.smoothing)
+                stats = pd.DataFrame(
+                    {"count": X[col].value_counts(), "mean": y.groupby(X[col]).mean()}
+                )
+                stats["smooth"] = (
+                    stats["count"] * stats["mean"] + self.smoothing * self.global_mean_
+                ) / (stats["count"] + self.smoothing)
                 self.maps_[col] = stats["smooth"]
         return self
 

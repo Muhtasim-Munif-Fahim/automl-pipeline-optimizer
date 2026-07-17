@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-
 
 PARAM_GRIDS: dict[str, dict[str, list[Any]]] = {
     "logistic_regression": {
@@ -44,20 +42,41 @@ def get_param_grid(model_name: str, n_iter: int = 20) -> dict[str, list[Any]] | 
     return PARAM_GRIDS.get(model_name)
 
 
-def optimize_grid(model, param_grid: dict, X_train, y_train, cv: int = 5, scoring: str = "accuracy"):
+def optimize_grid(
+    model, param_grid: dict, X_train, y_train, cv: int = 5, scoring: str = "accuracy"
+):
     search = GridSearchCV(
-        model, param_grid, cv=cv, scoring=scoring,
-        n_jobs=-1, verbose=0, return_train_score=True,
+        model,
+        param_grid,
+        cv=cv,
+        scoring=scoring,
+        n_jobs=-1,
+        verbose=0,
+        return_train_score=True,
     )
     search.fit(X_train, y_train)
     return search
 
 
-def optimize_random(model, param_dist: dict, X_train, y_train, n_iter: int = 20, cv: int = 5, scoring: str = "accuracy"):
+def optimize_random(
+    model,
+    param_dist: dict,
+    X_train,
+    y_train,
+    n_iter: int = 20,
+    cv: int = 5,
+    scoring: str = "accuracy",
+):
     search = RandomizedSearchCV(
-        model, param_dist, n_iter=n_iter, cv=cv,
-        scoring=scoring, n_jobs=-1, verbose=0,
-        random_state=42, return_train_score=True,
+        model,
+        param_dist,
+        n_iter=n_iter,
+        cv=cv,
+        scoring=scoring,
+        n_jobs=-1,
+        verbose=0,
+        random_state=42,
+        return_train_score=True,
     )
     search.fit(X_train, y_train)
     return search

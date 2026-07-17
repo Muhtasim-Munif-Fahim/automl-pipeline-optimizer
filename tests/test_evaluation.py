@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
-import pytest
 
-from automl_pipeline.evaluation import confusion_matrix_data, classification_report_data, calibration_curve_data
+from automl_pipeline.evaluation import calibration_curve_data, confusion_matrix_data
 
 
 class TestConfusionMatrix:

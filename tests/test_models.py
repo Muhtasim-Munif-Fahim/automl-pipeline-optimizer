@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from automl_pipeline.models import get_models, train_model, evaluate_model
+from automl_pipeline.models import evaluate_model, get_models, train_model
 
 
 class TestGetModels:

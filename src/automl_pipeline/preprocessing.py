@@ -6,8 +6,12 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.preprocessing import (
+    LabelEncoder,
+    MinMaxScaler,
+    RobustScaler,
+    StandardScaler,
+)
 
 
 def impute_missing(df: pd.DataFrame, strategy: str = "auto") -> pd.DataFrame:
@@ -17,9 +21,13 @@ def impute_missing(df: pd.DataFrame, strategy: str = "auto") -> pd.DataFrame:
             continue
         if df[col].dtype.kind in ("i", "f"):
             col_strategy = "median" if strategy == "auto" else strategy
-            df[col] = df[col].fillna(df[col].median() if col_strategy == "median" else df[col].mean())
+            df[col] = df[col].fillna(
+                df[col].median() if col_strategy == "median" else df[col].mean()
+            )
         else:
-            df[col] = df[col].fillna(df[col].mode().iloc[0] if not df[col].mode().empty else "unknown")
+            df[col] = df[col].fillna(
+                df[col].mode().iloc[0] if not df[col].mode().empty else "unknown"
+            )
     return df
 
 
@@ -39,12 +47,18 @@ def scale_numeric(df: pd.DataFrame, method: str = "standard") -> pd.DataFrame:
     numeric_cols = df.select_dtypes(include=["int64", "float64"]).columns
     if len(numeric_cols) == 0:
         return df
-    scaler: Any = {"standard": StandardScaler(), "minmax": MinMaxScaler(), "robust": RobustScaler()}.get(method, StandardScaler())
+    scaler: Any = {
+        "standard": StandardScaler(),
+        "minmax": MinMaxScaler(),
+        "robust": RobustScaler(),
+    }.get(method, StandardScaler())
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
     return df
 
 
-def handle_outliers(df: pd.DataFrame, method: str = "clip", threshold: float = 3.0) -> pd.DataFrame:
+def handle_outliers(
+    df: pd.DataFrame, method: str = "clip", threshold: float = 3.0
+) -> pd.DataFrame:
     df = df.copy()
     numeric_cols = df.select_dtypes(include=["int64", "float64"]).columns
     for col in numeric_cols:
@@ -58,10 +72,14 @@ def handle_outliers(df: pd.DataFrame, method: str = "clip", threshold: float = 3
     return df
 
 
-def preprocess(df: pd.DataFrame, target: str, config: dict[str, Any] | None = None) -> tuple[pd.DataFrame, pd.Series]:
+def preprocess(
+    df: pd.DataFrame, target: str, config: dict[str, Any] | None = None
+) -> tuple[pd.DataFrame, pd.Series]:
     cfg = config or {}
     df = impute_missing(df, cfg.get("impute_strategy", "auto"))
-    df = handle_outliers(df, cfg.get("outlier_method", "clip"), cfg.get("outlier_threshold", 3.0))
+    df = handle_outliers(
+        df, cfg.get("outlier_method", "clip"), cfg.get("outlier_threshold", 3.0)
+    )
     y = df[target]
     X = df.drop(columns=[target])
     X = encode_categorical(X, cfg.get("encoding_method", "auto"))
